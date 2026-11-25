@@ -1,1 +1,13 @@
-
+{
+  "name": "ugly-clicker",
+  "version": "1.0.0",
+  "description": "UGLY CLICKER Telegram Mini App",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.21.2",
+    "pg": "^8.13.1"
+  }
+}
