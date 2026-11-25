@@ -1,5 +1,4 @@
-
-const express = require("express");
+econstx express = require("express");
 const crypto = require("crypto");
 const { Pool } = require("pg");
 
@@ -316,3 +315,4 @@ initDatabase()
     console.error("Database initialization failed:", error);
     process.exit(1);
   });
+
