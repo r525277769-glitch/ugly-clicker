@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>UGLY CLICKER</title>
+<style>
+*{box-sizing:border-box}
+body{
+ margin:0;background:#080808;color:#f5d36b;
+ font-family:Arial,sans-serif;text-align:center;
+}
+header{padding:22px;font-size:25px;font-weight:bold;letter-spacing:3px}
+.balance{margin:25px auto;font-size:34px;font-weight:bold}
+.card{
+ background:#171717;border:1px solid #947329;
+ border-radius:16px;padding:20px;margin:15px;
+}
+.coin{
+ width:180px;height:180px;border-radius:50%;
+ border:5px solid #f5d36b;background:linear-gradient(145deg,#f5d36b,#8c6419);
+ color:#171000;font-size:35px;font-weight:bold;
+ box-shadow:0 0 35px #a47a27;
+}
+button{
+ background:#d5ad4c;color:#171000;border:0;
+ border-radius:10px;padding:13px 20px;
+ font-weight:bold;margin:5px;font-size:15px;
+}
+nav{display:flex;flex-wrap:wrap;justify-content:center}
+section{margin:15px}
+.small{color:#aaa;font-size:13px}
+</style>
+</head>
+<body>
+<header>UGLY CLICKER</header>
+
+<div class="card">
+ <div>ТВОЙ БАЛАНС</div>
+ <div class="balance">$<span id="money">0</span></div>
+ <div class="small">Уровень <span id="level">1</span></div>
+ <br>
+ <button class="coin" onclick="clickCoin()">UGLY<br>CLICK</button>
+ <p>За клик: $<span id="power">1</span></p>
+</div>
+
+<nav>
+<button onclick="show('shop')">МАГАЗИН</button>
+<button onclick="show('bonus')">БОНУСЫ</button>
+<button onclick="show('inventory')">ИНВЕНТАРЬ</button>
+<button onclick="show('rating')">РЕЙТИНГ</button>
+</nav>
+
+<section id="content" class="card">
+ <h2>Добро пожаловать!</h2>
+ Нажимай на золотую кнопку и зарабатывай деньги.
+</section>
+
+<script>
+let money=Number(localStorage.money||0);
+let power=Number(localStorage.power||1);
+let level=Number(localStorage.level||1);
+let inventory=JSON.parse(localStorage.inventory||"[]");
+
+function update(){
+ document.getElementById("money").textContent=money.toLocaleString("en-US");
+ document.getElementById("power").textContent=power;
+ document.getElementById("level").textContent=level;
+ localStorage.money=money;
+ localStorage.power=power;
+ localStorage.level=level;
+ localStorage.inventory=JSON.stringify(inventory);
+}
+function clickCoin(){
+ money+=power;
+ level=Math.floor(money/1000)+1;
+ update();
+}
+function show(page){
+ let html="";
+ if(page==="shop"){
+ html="<h2>МАГАЗИН УЛУЧШЕНИЙ</h2>"+
+ "<button onclick='buyPower()'>Улучшить клик — $100</button>";
+ }
+ if(page==="bonus"){
+ html="<h2>БОНУСЫ</h2>"+
+ "<button onclick='doubleFarm()'>x2 Farm — $50,000 / 30 сек</button>"+
+ "<button onclick='autoFarm()'>Автоклик x4 — $500,000 / 4 мин</button>";
+ }
+ if(page==="inventory"){
+ html="<h2>ИНВЕНТАРЬ</h2>"+
+ (inventory.length?inventory.map(x=>"<p>"+x+"</p>").join(""):"Пока пусто");
+ }
+ if(page==="rating"){
+ html="<h2>РЕЙТИНГ</h2><p>Твой баланс: $"+money+"</p>";
+ }
+ document.getElementById("content").innerHTML=html;
+}
+function buyPower(){
+ if(money>=100){money-=100;power++;update();show("shop")}
+ else alert("Недостаточно денег");
+}
+function doubleFarm(){
+ if(money>=50000){
+ money-=50000;update();
+ let old=power;power*=2;update();
+ setTimeout(()=>{power=old;update()},30000);
+ }else alert("Недостаточно денег");
+}
+function autoFarm(){
+ if(money>=500000){
+ money-=500000;update();
+ let count=0;
+ let timer=setInterval(()=>{
+ money+=power*4;update();count++;
+ if(count>=240)clearInterval(timer);
+ },1000);
+ }else alert("Недостаточно денег");
+}
+update();
+</script>
+</body>
+</html>
